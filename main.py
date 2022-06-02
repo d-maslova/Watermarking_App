@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 window = Tk()
 files = []
+watermark_copy = Image
 
 
 def upload_image():  # add labels to show which/how many images are there to process
@@ -16,6 +17,7 @@ def upload_image():  # add labels to show which/how many images are there to pro
 
 
 def select_watermark():
+    global watermark_copy
     watermark_im = fd.askopenfilename(initialdir="/", title="Select logo to use",
                                       filetypes=[('Images', '*.jpg *.jpeg *.png')])  # watermark image
     watermark = Image.open(watermark_im)
@@ -34,36 +36,36 @@ def watermark_text():
 
 
 def save_watermarked():
-    watermark = select_watermark()
     images = files
-    wm_x, wm_y = watermark.size
     try:
         text_wm = text_ent.get()
     except NameError:
+        watermark = watermark_copy
+        wm_x, wm_y = watermark.size
         for file in images:
-            im = Image.open(file)  # opens image
-            im_copy = im.copy()  # makes copy of image
+            im = Image.open(file)
+            im_copy = im.copy()
             x, y = im_copy.size
-            resized_width, resized_height = (x // 10), (y // 10)  # size watermark to a 10th of background
+            resized_width, resized_height = (x // 10), (y // 10)  # size watermark to 1/10th of background
             watermark.thumbnail((resized_width, resized_height))  # thumbnail keeps resize proportional
-            padding = 5
+            padding = 10
             bottom_right = (x-padding - wm_x, y - padding - wm_y)  # position for bottom right corner of the background image
             im_copy.paste(watermark, bottom_right, watermark)
             im_copy.save(f"{file}_watermarked.png")
             im_copy.show()
-
     else:
         fontsize = 10
-        image_fraction = 0.5
-        font = ImageFont.truetype("arial.ttf", fontsize)  # Calculate the size of font so its viewable
+        image_fraction = 0.1  # 1/10th of image size
+        font = ImageFont.truetype("arial.ttf", fontsize)
         for file in images:
-            im = Image.open(file)  # opens image
-            im_copy = im.copy()  # makes copy of image
+            im = Image.open(file)
+            im_copy = im.copy()
             im_copy_edit = ImageDraw.Draw(im_copy)
+            # CALCULATE FONT SIZE
             while font.getsize(text_wm)[0] < image_fraction*im_copy.size[0]:
                 fontsize += 1
                 font = ImageFont.truetype("arial.ttf", fontsize)
-            im_copy_edit.text((15, 15), text_wm, font=font)  # Calculate the size of font so its viewable goes here
+            im_copy_edit.text((15, 15), text_wm, font=font)
             im_copy.save("this.png")
             im_copy.show()
 
@@ -91,6 +93,5 @@ rb_wm = Radiobutton(text="Use text", width=15, var=var, value=0, command=waterma
 rb_logo = Radiobutton(text="Use logo", width=15, var=var, value=1, command=select_watermark, indicatoron=0)
 rb_wm.grid(row=1, column=2)
 rb_logo.grid(row=2, column=2)
-
 
 window.mainloop()
