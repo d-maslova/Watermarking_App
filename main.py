@@ -3,6 +3,7 @@ from tkinter import filedialog as fd
 from PIL import Image, ImageDraw, ImageFont
 
 window = Tk()
+file_frame = Frame(window)
 files = []
 watermark_copy = Image
 
@@ -13,7 +14,14 @@ def upload_image():  # add labels to show which/how many images are there to pro
                                     filetypes=[('Images', '*.jpg *.jpeg *.png')])
     for file in filepaths:
         files.append(file)
+    list_images(files)
     return files
+
+
+def list_images(im_files):
+    file_len = len(im_files)
+    for i in range(file_len):
+        myl_abel = Label(text=im_files[i][-10:]).grid(column=1, row=i+2)
 
 
 def select_watermark():
@@ -27,12 +35,10 @@ def select_watermark():
 
 def watermark_text():
     global text_ent
-    text_lb = Label(text="Type your watermark below:")
-    text_lb.grid(row=1, column=1)
     text_ent = Entry(master=window, width=25)
-    text_ent.grid(row=2, column=1)
+    text_ent.grid(column=0, row=5, padx=10, pady=10)
     text_ent.focus()
-    return text_ent, text_lb
+    return text_ent
 
 
 def save_watermarked():
@@ -49,7 +55,8 @@ def save_watermarked():
             resized_width, resized_height = (x // 10), (y // 10)  # size watermark to 1/10th of background
             watermark.thumbnail((resized_width, resized_height))  # thumbnail keeps resize proportional
             padding = 10
-            bottom_right = (x-padding - wm_x, y - padding - wm_y)  # position for bottom right corner of the background image
+            # position for bottom right corner of the background image:
+            bottom_right = (x-padding - wm_x, y - padding - wm_y)
             im_copy.paste(watermark, bottom_right, watermark)
             im_copy.save(f"{file}_watermarked.png")
             im_copy.show()
@@ -66,32 +73,32 @@ def save_watermarked():
                 fontsize += 1
                 font = ImageFont.truetype("arial.ttf", fontsize)
             im_copy_edit.text((15, 15), text_wm, font=font)
-            im_copy.save("this.png")
+            im_copy.save(f"{file}_w_text.png")
             im_copy.show()
 
 
 window.title("WATERMARKER v1.0")
-window.config(padx=50, pady=50)
+window.config(padx=40, pady=40)
 canvas = Canvas(width=400, height=400)
 
 # LABELS
-img_label = Label(text="Choose image/s to watermark")
+img_label = Label(text="1. Choose image/s to watermark")
 img_label.grid(row=0, column=0)
-wm_label = Label(text="Select watermark to apply")
-wm_label.grid(row=0, column=2)
+wm_label = Label(text="2. Select watermark to apply")
+wm_label.grid(row=2, column=0)
 
 var = IntVar()
 
 # BUTTONS
 im_button = Button(text="Upload", width=20, command=upload_image)
 im_button.grid(row=1, column=0, padx=10, pady=10,)
-ok_button = Button(text="Place and Save", width=20, command=save_watermarked)
-ok_button.grid(row=3, column=1, padx=10, pady=10,)
+ok_button = Button(text="3. Place and Save", width=20, command=save_watermarked)
+ok_button.grid(row=6, column=0, padx=10, pady=10,)
 
 # RADIO BUTTONS
-rb_wm = Radiobutton(text="Use text", width=15, var=var, value=0, command=watermark_text, indicatoron=0)
+rb_wm = Radiobutton(text="Use text", width=15, var=var, value=0, command=watermark_text, indicatoron=0,)
 rb_logo = Radiobutton(text="Use logo", width=15, var=var, value=1, command=select_watermark, indicatoron=0)
-rb_wm.grid(row=1, column=2)
-rb_logo.grid(row=2, column=2)
+rb_wm.grid(row=3, column=0, padx=5, pady=5)
+rb_logo.grid(row=4, column=0, padx=5, pady=5)
 
 window.mainloop()
