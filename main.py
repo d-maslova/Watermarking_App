@@ -3,6 +3,7 @@ from tkinter import filedialog as fd
 from PIL import Image, ImageDraw, ImageFont
 
 window = Tk()
+window.configure(bg="#F2EBE9")
 file_frame = Frame(window)
 files = []
 watermark_copy = Image
@@ -21,7 +22,7 @@ def upload_image():  # add labels to show which/how many images are there to pro
 def list_images(im_files):
     file_len = len(im_files)
     for i in range(file_len):
-        myl_abel = Label(text=im_files[i][-10:]).grid(column=1, row=i+2)
+        myl_abel = Label(text=im_files[i][-10:], bg="#F2EBE9").grid(column=1, row=i+2)
 
 
 def select_watermark():
@@ -82,22 +83,22 @@ window.config(padx=40, pady=40)
 canvas = Canvas(width=400, height=400)
 
 # LABELS
-img_label = Label(text="1. Choose image/s to watermark")
+img_label = Label(text="1. Choose image/s to watermark", bg="#F2EBE9", fg="#243A73", font=("Arial", 12))
 img_label.grid(row=0, column=0)
-wm_label = Label(text="2. Select watermark to apply")
+wm_label = Label(text="2. Select watermark to apply", bg="#F2EBE9", fg="#243A73", font=("Arial", 12))
 wm_label.grid(row=2, column=0)
 
 var = IntVar()
 
 # BUTTONS
-im_button = Button(text="Upload", width=20, command=upload_image)
+im_button = Button(text="Upload", width=20, command=upload_image, bg="#A5BECC", fg="#243A73", font=("Arial", 10))
 im_button.grid(row=1, column=0, padx=10, pady=10,)
-ok_button = Button(text="3. Place and Save", width=20, command=save_watermarked)
+ok_button = Button(text="3. Place and Save", width=20, command=save_watermarked, bg="#A5BECC", fg="#243A73", font=("Arial", 10))
 ok_button.grid(row=6, column=0, padx=10, pady=10,)
 
 # RADIO BUTTONS
-rb_wm = Radiobutton(text="Use text", width=15, var=var, value=0, command=watermark_text, indicatoron=0,)
-rb_logo = Radiobutton(text="Use logo", width=15, var=var, value=1, command=select_watermark, indicatoron=0)
+rb_wm = Radiobutton(text="text", width=10, var=var, value=0, command=watermark_text, indicatoron=0, bg="#A5BECC", fg="#243A73")
+rb_logo = Radiobutton(text="logo", width=10, var=var, value=1, command=select_watermark, indicatoron=0, bg="#A5BECC", fg="#243A73")
 rb_wm.grid(row=3, column=0, padx=5, pady=5)
 rb_logo.grid(row=4, column=0, padx=5, pady=5)
 
